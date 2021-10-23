@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useContext, useEffect} from 'react';
+import {Context} from './context/ModalContext';
+import Modal from './Modal';
 
-function App() {
+const App = () => {
+  const {active, setActive} = useContext(Context);
+  useEffect(() => {
+    console.log(active);
+  }, [active])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={() => setActive(true)}>Нажми на кнопку</button>
+      <Modal active={active} setActive={setActive}>
+          <h1>Hello world</h1>
+      </Modal>
     </div>
   );
 }
