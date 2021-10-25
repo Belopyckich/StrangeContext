@@ -1,0 +1,23 @@
+.myInputDiv {
+    display: flex;
+    flex-direction: column;
+}
+
+.myError {
+    text-align: left;
+    color: red;
+    font-size: 15px;
+}
+
+.myInput {
+    margin-bottom: 10px;
+    padding: 10px 5px;
+    border: 2px solid teal;
+    color: teal;
+}
+.inputError {
+    border: 2px solid red;
+}
+.off {
+    display: none;
+}

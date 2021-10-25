@@ -1,0 +1,13 @@
+.myForm{
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.myForm__header {
+    color: teal;
+    font-size: 25px;
+    margin: 20px;
+}
