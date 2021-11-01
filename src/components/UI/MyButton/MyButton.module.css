@@ -1,27 +1,9 @@
-.MyBtn {
+.myBtn {
     padding: 10px;
     color: teal;
     border: solid 2px teal;
     cursor: pointer;
 }
-.myBtn::after {
-    animation: rotate 2s infinite linear;
-}
-.error {
+.myBtnError {
     border: solid 2px red;
-}
-.error::after {
-    animation: rotate 2s infinite linear;
-}
-
-@keyframes rotate {
-    0% {
-        translate: translateX(-100px);
-    }
-    50% {
-        translate: translateX(0px);
-    }
-    100% {
-        translate: translateX(100px);
-    }
 }

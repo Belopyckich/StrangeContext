@@ -3,13 +3,16 @@
     flex-direction: column;
 }
 
-.myError {
+.error {
     text-align: left;
     color: red;
     font-size: 15px;
 }
+.disabled {
+    display: none;
+}
 
-.myInput {
+.input {
     margin-bottom: 10px;
     padding: 10px 5px;
     border: 2px solid teal;
