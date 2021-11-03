@@ -1,94 +1,74 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Context } from "../../context/ModalContext";
 import Modal from "../Modal/Modal.jsx";
 import ListItem from "../ListItem/ListItem.jsx";
 import MyButton from "../UI/MyButton/MyButton";
 import Form from "../Form/Form";
+import MySelect from "../UI/MySelect/MySelect";
+import { addPostAction, removePostAction } from "../../store/postReducer";
 
 const PostList = () => {
-  const { active, setActive, error, setError } = useContext(Context);
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      name: "Eugene",
-      surname: "Demidov",
-      description: "Hello all",
-      email: "evgenij.demidov.1998@mail.ru",
-    },
-    {
-      id: 2,
-      name: "Liza",
-      surname: "Demidova",
-      description: "Hello all",
-      email: "liza.demidova.2007@mail.ru",
-    },
-    {
-      id: 3,
-      name: "Varya",
-      surname: "Borisovna",
-      description: "Hello all",
-      email: "varya.borisovna.2006@mail.ru",
-    },
-    {
-      id: 4,
-      name: "Kostya",
-      surname: "Ravkovich",
-      description: "Hello all",
-      email: "son.of.shit.1999@mail.ru",
-    },
-    {
-      id: 5,
-      name: "Maksim",
-      surname: "Klimashenok",
-      description: "Hello all",
-      email: "maksim.klimashenok.1999@mail.ru",
-    },
-    {
-      id: 6,
-      name: "Senya",
-      surname: "Demidova",
-      description: "Hello all",
-      email: "senya.demidova.2015@mail.ru",
-    },
-    {
-      id: 7,
-      name: "Lesha",
-      surname: "Mamai",
-      description: "Hello all",
-      email: "lesha.mamai.1998@mail.ru",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSort, setSelectedSort] = useState('');
+  const { setActive} = useContext(Context);
+  const posts = useSelector(state => state.posts.posts);
+
+  const sortedPosts = useMemo(() => {
+    if(selectedSort) {
+      return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]));
+    }
+    return posts;
+  }, [selectedSort, posts])
+
+  const sortedAndSearchedPosts = useMemo(() => {
+    if(searchQuery) {
+      return sortedPosts.filter(post => post.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+    return sortedPosts;
+  }, [searchQuery, sortedPosts])
 
   const addPost = (event, newPost) => {
     event.preventDefault();
-    if (error || Object.values(newPost).includes("")) {
-      setActive(true);
-    } else {
-      newPost = Object.assign({id: posts.length + 1}, newPost);
-      setPosts([newPost, ...posts]);
-      setActive(false);
-    }
+    newPost = Object.assign({id: posts.length + 1}, newPost);
+    dispatch(addPostAction(newPost));
+    setActive(false);
   };
 
-  const deletePost = (post) => {
-    setPosts(posts.filter(p => p.id !== post.id))
+  const removePost = (post) => {
+    dispatch(removePostAction(post));
+  }
+
+  const sortPosts = (sort) => {
+    setSelectedSort(sort);
   }
 
   return (
     <div className="Post">
-      <select>
-        <option value="value1">По названию</option>
-        <option value="value1">По описанию</option>
-      </select>
-      {posts.length !== 0
-      ? posts.map((post) => (
-        <ListItem post={post} key={post.id} deletePost={deletePost}/>
+      <MySelect
+          value={selectedSort}
+          onChange={sortPosts}
+          defaultValue="Сортировка"
+          options={[
+            {value: "name", name: "По имени"},
+            {value: "surname", name: "По фамилии"},
+            {value: "description", name: "По описанию"},
+          ]}/>
+      <input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="...Поиск"
+      />
+      {sortedAndSearchedPosts.length !== 0
+      ? sortedAndSearchedPosts.map(post => (
+        <ListItem post={post} key={post.id} removePost={removePost}/>
         ))
       : <div>Посты не найдены</div>
       }
       <MyButton onClick={() => setActive(true)}>Добавить пользователя</MyButton>
       <Modal>
-        <Form addPost={addPost} active={active} setActive={setActive}></Form>
+        <Form addPost={addPost}></Form>
       </Modal>
     </div>
   );
